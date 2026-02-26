@@ -1,15 +1,29 @@
+require("dotenv").config();
 const express = require("express");
+const problemRoutes = require("./routes/problem.routes");
 const prisma = require("./prismaClient");
 const cors = require("cors");
-require("dotenv").config();
+const authMiddleware = require("./middleware/auth.middleware");
+const submissionRoutes = require("./routes/submission.routes");
 const authRoutes = require("./routes/auth.routes");
+const aiRoutes = require("./routes/ai.routes");
+
 
 const app = express();
+app.use((req, res, next) => {
+  console.log("HIT:", req.method, req.url);
+  next();
+});
 
 app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/problems", problemRoutes);
+app.use("/api/submissions", submissionRoutes);
+app.use("/api/ai", aiRoutes);
+
+
 
 app.get("/", (req, res) => {
   res.send("Code-Judge API chaalu");
@@ -20,7 +34,17 @@ app.get("/test-db", async (req, res) => {
   res.json(users);
 });
 
+app.get("/protected", authMiddleware, (req, res) => {
+  res.json({
+    message: "You are authorized",
+    user: req.user
+  });
+});
+
+
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+
