@@ -9,6 +9,8 @@ import Dashboard from "./pages/Dashboard";
 import Layout from "./components/Layout";
 import SubmissionView from "./pages/SubmissionView";
 
+
+
 export default function App() {
   return (
     <Routes>
@@ -60,7 +62,8 @@ export default function App() {
     </Layout>
   }
       />
-
+     
+      
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

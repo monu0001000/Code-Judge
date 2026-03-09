@@ -37,12 +37,38 @@ exports.createProblem = async (req, res) => {
 
 exports.getAllProblems = async (req, res) => {
   try {
+    const { difficulty, tag, search } = req.query;
+
+    const filters = {};
+
+    if (difficulty) {
+      filters.difficulty = difficulty;
+    }
+
+    if (tag) {
+      filters.tags = {
+        has: tag
+      };
+    }
+
+    if (search) {
+      filters.title = {
+        contains: search,
+        mode: "insensitive"
+      };
+    }
+
     const problems = await prisma.problem.findMany({
+      where: filters,
       select: {
         id: true,
         title: true,
         difficulty: true,
+        tags: true,
         createdAt: true
+      },
+      orderBy: {
+        createdAt: "desc"
       }
     });
 
@@ -52,4 +78,3 @@ exports.getAllProblems = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-

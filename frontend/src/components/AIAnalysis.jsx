@@ -1,49 +1,62 @@
-import React from "react";
-
-const AIAnalysis = ({ analysis }) => {
+export default function AIAnalysis({ analysis }) {
   if (!analysis) return null;
 
   return (
-    <div style={styles.container}>
-      <h2>AI Code Review</h2>
+    <div className="space-y-6">
 
-      <Section title="Logic" content={analysis.logic} />
-      <Section title="Edge Cases" content={analysis.edgeCases} />
-      <Section title="Time Complexity" content={analysis.timeComplexity} />
-      <Section title="Improvement" content={analysis.improvement} />
+      {/* Logic */}
+      <Section
+        title="Logic"
+        content={analysis.logic}
+      />
 
-      <div style={styles.section}>
-        <h3>Improved Code</h3>
-        <pre style={styles.code}>{analysis.improvedCode}</pre>
-      </div>
+      {/* Edge Cases */}
+      <Section
+        title="Edge Cases"
+        content={analysis.edgeCases}
+      />
+
+      {/* Time Complexity */}
+      <Section
+        title="Time Complexity"
+        content={analysis.timeComplexity}
+      />
+
+      {/* Improvement */}
+      <Section
+        title="Improvement"
+        content={analysis.improvement}
+      />
+
+      {/* Improved Code */}
+      {analysis.improvedCode && (
+        <div>
+          <h3 className="text-purple-400 font-semibold mb-2">
+            Improved Code
+          </h3>
+
+          <pre className="bg-slate-900 border border-slate-700 p-4 rounded-lg overflow-x-auto text-sm">
+            <code>{analysis.improvedCode}</code>
+          </pre>
+        </div>
+      )}
+
     </div>
   );
-};
+}
 
-const Section = ({ title, content }) => (
-  <div style={styles.section}>
-    <h3>{title}</h3>
-    <p>{content}</p>
-  </div>
-);
+function Section({ title, content }) {
+  if (!content) return null;
 
-const styles = {
-  container: {
-    marginTop: "20px",
-    padding: "20px",
-    background: "#1e1e1e",
-    color: "white",
-    borderRadius: "8px",
-  },
-  section: {
-    marginBottom: "15px",
-  },
-  code: {
-    background: "#111",
-    padding: "10px",
-    borderRadius: "6px",
-    overflowX: "auto",
-  },
-};
+  return (
+    <div>
+      <h3 className="text-purple-400 font-semibold mb-2">
+        {title}
+      </h3>
 
-export default AIAnalysis;
+      <p className="text-slate-300 leading-relaxed">
+        {content}
+      </p>
+    </div>
+  );
+}

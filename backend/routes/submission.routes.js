@@ -9,10 +9,10 @@ const {
   getUserDashboard
 } = require("../controllers/submission.controller");
 
-// ✅ Dashboard route (static first)
+//  Dashboard route (static first)
 router.get("/dashboard", authMiddleware, getUserDashboard);
 
-// ✅ Create submission
+//  Create submission
 router.post("/", authMiddleware, createSubmission);
 
 //  Dynamic route last

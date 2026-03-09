@@ -14,15 +14,23 @@
   "dependencies": {
     "@google/genai": "^1.41.0",
     "@prisma/client": "^5.22.0",
+    "@y/websocket-server": "^0.1.5",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "groq-sdk": "^0.37.0",
     "jsonwebtoken": "^9.0.3",
-    "prisma": "^5.22.0"
+    "prisma": "^5.22.0",
+    "socket.io": "^4.8.3",
+    "vm2": "^3.10.5",
+    "ws": "^8.19.0",
+    "yjs": "^13.6.29"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }

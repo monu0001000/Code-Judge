@@ -7,14 +7,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Discussion {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  userId    String
+  problemId String
+  parentId  String?
+
+  user      User     @relation(fields: [userId], references: [id])
+  problem   Problem  @relation(fields: [problemId], references: [id])
+
+  parent    Discussion? @relation("Thread", fields: [parentId], references: [id])
+  replies   Discussion[] @relation("Thread")
+}
+
+
 model User {
   id          String       @id @default(uuid())
   name        String
   email       String       @unique
   password    String
+  avatar      String?
   createdAt   DateTime     @default(now())
   role        Role         @default(USER)
   submissions Submission[]
+  discussions Discussion[]
 }
 
 model Problem {
@@ -22,9 +41,11 @@ model Problem {
   title       String
   description String
   difficulty  Difficulty
+  tags        String[]     
   createdAt   DateTime     @default(now())
   submissions Submission[]
   testCases   TestCase[]
+  discussions Discussion[]
 }
 
 model TestCase {

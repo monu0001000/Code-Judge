@@ -7,6 +7,8 @@ const authMiddleware = require("./middleware/auth.middleware");
 const submissionRoutes = require("./routes/submission.routes");
 const authRoutes = require("./routes/auth.routes");
 const aiRoutes = require("./routes/ai.routes");
+const userRoutes = require("./routes/user.routes");
+const discussionRoutes = require("./routes/discussion.routes");
 
 
 const app = express();
@@ -22,6 +24,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/problems", problemRoutes);
 app.use("/api/submissions", submissionRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/discussions", discussionRoutes);
 
 
 
