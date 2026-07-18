@@ -1,6 +1,6 @@
-🚀 CodeJudge – Full-Stack Competitive Programming Platform
+🚀 CodeJudge – Full-Stack Coding Judge Platform
 
-CodeJudge is a full-stack competitive programming platform built using React, Node.js, Express, Prisma, and PostgreSQL. It allows users to solve algorithmic problems, submit code, receive automated verdicts, and analyze performance through a personalized dashboard.
+CodeJudge is a full-stack coding judge platform built using React, Node.js, Express, Prisma, and PostgreSQL. It allows users to solve algorithmic problems, submit code, receive automated verdicts, get AI-powered code review, and analyze performance through a personalized dashboard.
 
 🛠 Tech Stack
 
@@ -14,6 +14,8 @@ React Router
 
 Axios
 
+Monaco Editor
+
 Backend
 
 Node.js
@@ -26,14 +28,17 @@ PostgreSQL
 
 JWT Authentication
 
+Groq (Llama 3.3 70B) for AI code analysis
+
 ✨ Features
+
 🔐 Authentication
 
-Secure JWT-based authentication
+Secure JWT-based authentication (bcrypt password hashing)
 
 Role-based schema (USER / ADMIN)
 
-Protected routes
+Client-side protected routes + server-side admin middleware
 
 🧠 Problem Solving
 
@@ -41,9 +46,15 @@ Multi-testcase execution
 
 Async submission evaluation
 
-Verdict system (ACCEPTED, WRONG_ANSWER, TLE, etc.)
+Verdict system (ACCEPTED, WRONG_ANSWER, RUNTIME_ERROR, TIME_LIMIT_EXCEEDED, PENDING)
 
 Runtime measurement
+
+🤖 AI Code Analysis
+
+Groq-powered (Llama 3.3 70B) review of submitted code
+
+Returns logic explanation, edge cases, time complexity, and improvement suggestions
 
 📊 Dashboard Analytics
 
@@ -61,11 +72,13 @@ Recent submissions tracking
 
 View all previous submissions
 
-Full code replay
-
 Test case breakdown
 
 Verdict visualization
+
+💬 Discussions
+
+Threaded/nested comments per problem
 
 🧱 Database Design
 
@@ -88,3 +101,21 @@ Async judge service evaluates code against test cases
 Verdict + runtime stored in DB
 
 Dashboard aggregates performance metrics
+
+⚠️ Known Limitations
+
+Code execution currently runs via Node's `child_process`, not a fully isolated sandbox (Docker/isolated-vm sandboxing planned — see roadmap below)
+
+JavaScript submissions only; multi-language support planned
+
+Admin-only problem creation endpoint exists on the backend, but there's no admin UI yet
+
+🗺 Roadmap
+
+Isolated sandbox execution (Docker or isolated-vm)
+
+Multi-language support (Python, C++, Java)
+
+Admin panel UI for problem management
+
+Problem search/filter/tagging

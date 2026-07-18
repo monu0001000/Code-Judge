@@ -69,7 +69,7 @@ async function judgeSubmission(submissionId) {
             errorType: "TLE"
           });
 
-          verdict = "JUDGE_TIMEOUT";
+          verdict = "TIME_LIMIT_EXCEEDED";
           break;
         } else {
           results.push({
@@ -103,7 +103,7 @@ async function judgeSubmission(submissionId) {
     try {
       await prisma.submission.update({
         where: { id: submissionId },
-        data: { verdict: "ERROR" }
+        data: { verdict: "RUNTIME_ERROR" }
       });
     } catch (e) {}
   }

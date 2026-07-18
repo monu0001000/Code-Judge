@@ -37,7 +37,7 @@ exports.createSubmission = async (req, res) => {
       console.error("Judge failed:", err);
       await prisma.submission.update({
         where: { id: submission.id },
-        data: { verdict: "ERROR" },
+        data: { verdict: "RUNTIME_ERROR" },
       });
     });
 
