@@ -44,7 +44,7 @@ export default function SubmissionModal({ submission, onClose }) {
               t.passed ? "bg-green-900" : "bg-red-900"
             }`}
           >
-            {t.isSample === true ? (
+            {t.isSample !== false ? (
               <>
                 <div>Input: {t.input}</div>
                 <div>Expected: {t.expected}</div>

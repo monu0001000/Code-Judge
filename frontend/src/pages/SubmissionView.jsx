@@ -72,7 +72,7 @@ export default function SubmissionView() {
                 t.passed ? "bg-green-900" : "bg-red-900"
               }`}
             >
-              {t.isSample === true ? (
+              {t.isSample !== false ? (
                 <>
                   <div><strong>Input:</strong> {t.input}</div>
                   <div><strong>Expected:</strong> {t.expected}</div>
