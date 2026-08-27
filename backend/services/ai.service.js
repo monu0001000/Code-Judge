@@ -36,7 +36,7 @@ Do not add markdown. Do not add explanation outside JSON.
           content: prompt,
         },
       ],
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
       temperature: 0.2,
     });
 
