@@ -1,6 +1,25 @@
 const prisma = require("../prismaClient");
 const { runCodeWithInput } = require("./codeRunner");
 
+function buildTestResult(testCase, details) {
+  const result = {
+    isSample: testCase.isSample,
+    ...details
+  };
+
+  // Hidden test data must never be persisted in a form that the submission
+  // owner can retrieve. They receive only pass/fail and timing information.
+  if (!testCase.isSample) {
+    return result;
+  }
+
+  return {
+    ...result,
+    input: testCase.input,
+    expected: String(testCase.output).trim()
+  };
+}
+
 async function judgeSubmission(submissionId) {
   try {
     const submission = await prisma.submission.findUnique({
@@ -36,50 +55,42 @@ async function judgeSubmission(submissionId) {
 
           const passed = output === expected;
 
-          results.push({
-            input: tc.input,
-            expected,
+          results.push(buildTestResult(tc, {
             output,
             passed,
             runtimeMs: duration
-          });
+          }));
 
           if (!passed) {
             verdict = "WRONG_ANSWER";
           }
         } else {
-          results.push({
-            input: tc.input,
-            expected: tc.output,
+          results.push(buildTestResult(tc, {
             output: null,
             passed: false,
             errorType: res.type
-          });
+          }));
 
           verdict = "RUNTIME_ERROR";
         }
 
       } catch (err) {
         if (err && err.type === "TLE") {
-          results.push({
-            input: tc.input,
-            expected: tc.output,
+          results.push(buildTestResult(tc, {
             output: null,
             passed: false,
             errorType: "TLE"
-          });
+          }));
 
           verdict = "TIME_LIMIT_EXCEEDED";
           break;
         } else {
-          results.push({
-            input: tc.input,
-            expected: tc.output,
+          results.push(buildTestResult(tc, {
             output: null,
             passed: false,
             errorType: err?.type || "RUNTIME_ERROR",
-            message: err?.error || String(err)
-          });
+            ...(tc.isSample ? { message: err?.error || String(err) } : {})
+          }));
 
           verdict = verdict === "ACCEPTED" ? "RUNTIME_ERROR" : verdict;
         }

@@ -2,6 +2,8 @@
 const prisma = require("../prismaClient");
 const { judgeSubmission } = require("../services/judge.service");
 
+const MAX_SUBMISSION_CODE_LENGTH = 50_000;
+
 exports.createSubmission = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -9,8 +11,14 @@ exports.createSubmission = async (req, res) => {
 
     console.log("Problem ID from request:", problemId);
 
-    if (!problemId || !code) {
-      return res.status(400).json({ message: "Missing fields" });
+    if (!problemId || typeof code !== "string" || !code.trim()) {
+      return res.status(400).json({ message: "A problem ID and code are required" });
+    }
+
+    if (code.length > MAX_SUBMISSION_CODE_LENGTH) {
+      return res.status(400).json({
+        message: `Code is too long (max ${MAX_SUBMISSION_CODE_LENGTH} characters)`
+      });
     }
 
     const problem = await prisma.problem.findUnique({
@@ -52,10 +60,11 @@ exports.createSubmission = async (req, res) => {
 
 exports.getSubmissionById = async (req, res) => {
   try {
-    const { id } = req.params;   
+    const { id } = req.params;
+    const userId = req.user.userId;
 
-    const submission = await prisma.submission.findUnique({
-      where: { id },
+    const submission = await prisma.submission.findFirst({
+      where: { id, userId },
       include: {
         problem: {
           select: { title: true },

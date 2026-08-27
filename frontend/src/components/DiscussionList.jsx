@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import api from "../services/api";
 import DiscussionItem from "./DiscussionItem";
 
@@ -7,18 +7,18 @@ export default function DiscussionList({ problemId }) {
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchDiscussions();
-  }, []);
-
-  const fetchDiscussions = async () => {
+  const fetchDiscussions = useCallback(async () => {
     try {
       const res = await api.get(`/discussions/${problemId}`);
       setDiscussions(res.data);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [problemId]);
+
+  useEffect(() => {
+    fetchDiscussions();
+  }, [fetchDiscussions]);
 
   const postComment = async () => {
     if (!newComment.trim()) return;

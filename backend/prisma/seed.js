@@ -12,8 +12,9 @@ async function main() {
       tags: ["Array", "HashMap"],
       testCases: {
         create: [
-          { input: "4 9\n2 7 11 15", output: "0 1" },
-          { input: "3 6\n3 2 4", output: "1 2" }
+          { input: "4 9\n2 7 11 15", output: "0 1", isSample: true },
+          { input: "3 6\n3 2 4", output: "1 2", isSample: true },
+          { input: "4 8\n2 7 11 6", output: "0 3", isSample: false }
         ]
       }
     }
@@ -28,8 +29,9 @@ async function main() {
       tags: ["Sliding Window", "String"],
       testCases: {
         create: [
-          { input: "abcabcbb", output: "3" },
-          { input: "bbbbb", output: "1" }
+          { input: "abcabcbb", output: "3", isSample: true },
+          { input: "bbbbb", output: "1", isSample: true },
+          { input: "pwwkew", output: "3", isSample: false }
         ]
       }
     }
@@ -44,7 +46,8 @@ async function main() {
       tags: ["Graph", "BFS"],
       testCases: {
         create: [
-          { input: "hit cog\nhot dot dog lot log cog", output: "5" }
+          { input: "hit cog\nhot dot dog lot log cog", output: "5", isSample: true },
+          { input: "a c\na b c", output: "2", isSample: false }
         ]
       }
     }

@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import PlaygroundDemo from "../components/PlaygroundDemo";
 
+const MotionDiv = motion.div;
+
 const CHECKS = [
   {
     test: "Can submitted code reach the filesystem or network?",
@@ -61,7 +63,7 @@ export default function Landing() {
 
       {/* HERO */}
       <section className="max-w-6xl mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-20 grid md:grid-cols-2 gap-14 items-center">
-        <motion.div
+        <MotionDiv
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -116,16 +118,16 @@ export default function Landing() {
               Login
             </span>
           </p>
-        </motion.div>
+        </MotionDiv>
 
-        <motion.div
+        <MotionDiv
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15 }}
           className="flex justify-center md:justify-end"
         >
           <PlaygroundDemo />
-        </motion.div>
+        </MotionDiv>
       </section>
 
       {/* VERDICTS / FEATURES */}

@@ -44,9 +44,17 @@ export default function SubmissionModal({ submission, onClose }) {
               t.passed ? "bg-green-900" : "bg-red-900"
             }`}
           >
-            <div>Input: {t.input}</div>
-            <div>Expected: {t.expected}</div>
-            <div>Output: {t.output}</div>
+            {t.isSample === true ? (
+              <>
+                <div>Input: {t.input}</div>
+                <div>Expected: {t.expected}</div>
+                <div>Output: {t.output}</div>
+              </>
+            ) : (
+              <div>Hidden test {i + 1}</div>
+            )}
+            <div>{t.passed ? "Passed" : "Failed"}</div>
+            {t.errorType && <div>Error: {t.errorType}</div>}
           </div>
         ))}
       </div>

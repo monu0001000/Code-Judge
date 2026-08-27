@@ -10,23 +10,33 @@ export default function Problems() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let cancelled = false;
+
+    const fetchProblems = async () => {
+      try {
+        const params = new URLSearchParams();
+
+        if (difficulty) params.append("difficulty", difficulty);
+        if (tag) params.append("tag", tag);
+        if (search) params.append("search", search);
+
+        const res = await api.get(`/problems?${params.toString()}`);
+        if (!cancelled) {
+          setProblems(res.data);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          console.error("Failed to fetch problems", err);
+        }
+      }
+    };
+
     fetchProblems();
+
+    return () => {
+      cancelled = true;
+    };
   }, [difficulty, tag, search]);
-
-  const fetchProblems = async () => {
-    try {
-      const params = new URLSearchParams();
-
-      if (difficulty) params.append("difficulty", difficulty);
-      if (tag) params.append("tag", tag);
-      if (search) params.append("search", search);
-
-      const res = await api.get(`/problems?${params.toString()}`);
-      setProblems(res.data);
-    } catch (err) {
-      console.error("Failed to fetch problems", err);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-slate-900 text-white py-12 px-6">

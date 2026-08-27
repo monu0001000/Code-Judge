@@ -2,11 +2,31 @@ const prisma = require("../prismaClient");
 
 exports.createProblem = async (req, res) => {
   try {
-    const { title, description, difficulty, testCases } = req.body;
+    const { title, description, difficulty, tags = [], testCases } = req.body;
 
     // Basic validation
-    if (!title || !description || !difficulty || !Array.isArray(testCases) || testCases.length === 0) {
-      return res.status(400).json({ message: "Invalid input" });
+    const validDifficulties = ["EASY", "MEDIUM", "HARD"];
+    const hasInvalidTestCase = !Array.isArray(testCases) || testCases.some(
+      (testCase) =>
+        typeof testCase.input !== "string" ||
+        typeof testCase.output !== "string" ||
+        typeof testCase.isSample !== "boolean"
+    );
+    const hasSample = Array.isArray(testCases) && testCases.some((testCase) => testCase.isSample);
+    const hasHiddenCase = Array.isArray(testCases) && testCases.some((testCase) => !testCase.isSample);
+
+    if (
+      !title ||
+      !description ||
+      !validDifficulties.includes(difficulty) ||
+      !Array.isArray(tags) ||
+      hasInvalidTestCase ||
+      !hasSample ||
+      !hasHiddenCase
+    ) {
+      return res.status(400).json({
+        message: "Provide a title, description, valid difficulty, tags, and at least one sample and hidden test case"
+      });
     }
 
     // Create problem + test cases 
@@ -15,10 +35,12 @@ exports.createProblem = async (req, res) => {
         title,
         description,
         difficulty,
+        tags,
         testCases: {
           create: testCases.map(tc => ({
             input: tc.input,
-            output: tc.output
+            output: tc.output,
+            isSample: tc.isSample
           }))
         }
       },

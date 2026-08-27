@@ -2,6 +2,7 @@ const ivm = require("isolated-vm");
 
 const MEMORY_LIMIT_MB = 64;
 const DEFAULT_TIMEOUT_MS = 3000;
+const MAX_OUTPUT_CHARS = 64 * 1024;
 
 /**
  * Runs untrusted user code inside a fully isolated V8 context (separate heap,
@@ -41,9 +42,24 @@ function runCodeWithInput(userCode, input, timeoutMs = DEFAULT_TIMEOUT_MS) {
       // console, fs, process, or require, so this is the only way user code
       // can surface output.
       const bootstrap = `
+        let printedCharacters = 0;
         const console = {
-          log: (...args) => _hostLog.applySync(undefined, args.map(String)),
-          error: (...args) => _hostLog.applySync(undefined, args.map(String)),
+          log: (...args) => {
+            const values = args.map(String);
+            printedCharacters += values.join(" ").length + 1;
+            if (printedCharacters > ${MAX_OUTPUT_CHARS}) {
+              throw new Error("Output limit exceeded");
+            }
+            _hostLog.applySync(undefined, values);
+          },
+          error: (...args) => {
+            const values = args.map(String);
+            printedCharacters += values.join(" ").length + 1;
+            if (printedCharacters > ${MAX_OUTPUT_CHARS}) {
+              throw new Error("Output limit exceeded");
+            }
+            _hostLog.applySync(undefined, values);
+          },
         };
       `;
 

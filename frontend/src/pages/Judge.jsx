@@ -9,13 +9,7 @@ import DiscussionList from "../components/DiscussionList";
 import api from "../services/api";
 import { analyzeCode } from "../services/aiService";
 
-export default function Judge() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  // ------------------ UNIVERSAL TEMPLATE ------------------
-
-  const DEFAULT_TEMPLATE = `function solve(input) {
+const DEFAULT_TEMPLATE = `function solve(input) {
   // Split input lines
   const lines = input.trim().split("\\n");
 
@@ -27,6 +21,10 @@ export default function Judge() {
 
   return "";
 }`;
+
+export default function Judge() {
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   // ------------------ STATE ------------------
 
@@ -244,9 +242,16 @@ export default function Judge() {
                   t.passed ? "bg-green-900" : "bg-red-900"
                 }`}
               >
-                <div>Input: {t.input}</div>
-                <div>Expected: {t.expected}</div>
-                <div>Output: {t.output}</div>
+                {t.isSample === true ? (
+                  <>
+                    <div>Input: {t.input}</div>
+                    <div>Expected: {t.expected}</div>
+                    <div>Output: {t.output}</div>
+                  </>
+                ) : (
+                  <div>Hidden test {i + 1}</div>
+                )}
+                {t.errorType && <div>Error: {t.errorType}</div>}
                 <div>{t.passed ? "✅ Passed" : "❌ Failed"}</div>
               </div>
             ))}

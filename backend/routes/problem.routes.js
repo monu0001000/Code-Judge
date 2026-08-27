@@ -20,7 +20,15 @@ router.get("/:id", authMiddleware, async (req, res) => {
 
     const problem = await prisma.problem.findUnique({
       where: { id },
-      include: { testCases: true }
+      include: {
+        testCases: {
+          where: { isSample: true },
+          select: {
+            input: true,
+            output: true
+          }
+        }
+      }
     });
 
     if (!problem) {
