@@ -115,7 +115,7 @@ export default function PlaygroundDemo() {
           rows={5}
           className="w-full rounded-lg border px-3 py-2.5 text-[13px] leading-relaxed resize-none focus:outline-none focus-visible:ring-2"
           style={{
-            background: "#0b0d13",
+            background: "#0a0812",
             borderColor: "var(--border)",
             color: "var(--text)",
             fontFamily: "var(--font-display)",

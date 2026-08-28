@@ -10,12 +10,12 @@
 }
 
 :root {
-  --bg: #0f1117;
-  --panel: #161a23;
-  --border: #23283b;
-  --text: #e6e6eb;
-  --muted: #9aa1b2;
-  --accent: #4f7cff;
+  --bg: #0d0b14;
+  --panel: #171320;
+  --border: #2a2438;
+  --text: #ece9f2;
+  --muted: #9d94b0;
+  --accent: #8b5cf6;
   --success: #4ade80;
   --error: #f87171;
   --warning: #facc15;
@@ -51,6 +51,12 @@ body {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   background-color: var(--bg);
   color: var(--text);
+}
+
+.app-bg {
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, rgba(139, 92, 246, 0.22) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
 }
 
 button {

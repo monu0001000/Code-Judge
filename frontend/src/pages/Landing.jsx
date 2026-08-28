@@ -30,8 +30,8 @@ export default function Landing() {
 
   return (
     <div
-      className="min-h-screen"
-      style={{ background: "var(--bg)", color: "var(--text)", fontFamily: "var(--font-body)" }}
+      className="min-h-screen app-bg"
+      style={{ color: "var(--text)", fontFamily: "var(--font-body)" }}
     >
       {/* NAVBAR */}
       <nav
@@ -62,7 +62,18 @@ export default function Landing() {
       </nav>
 
       {/* HERO */}
-      <section className="max-w-6xl mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-20 grid md:grid-cols-2 gap-14 items-center">
+      <div className="relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[1100px] h-[700px]"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(139, 92, 246, 0.22) 0%, rgba(139, 92, 246, 0.06) 45%, transparent 70%)",
+            filter: "blur(10px)",
+          }}
+        />
+
+        <section className="relative max-w-[1320px] mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-20 grid md:grid-cols-2 gap-14 items-center">
         <MotionDiv
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -128,10 +139,11 @@ export default function Landing() {
         >
           <PlaygroundDemo />
         </MotionDiv>
-      </section>
+        </section>
+      </div>
 
       {/* VERDICTS / FEATURES */}
-      <section id="verdicts" className="max-w-6xl mx-auto px-6 md:px-10 py-16 md:py-24">
+      <section id="verdicts" className="max-w-[1320px] mx-auto px-6 md:px-10 py-16 md:py-24">
         <h3
           className="text-2xl md:text-3xl font-bold mb-2"
           style={{ fontFamily: "var(--font-display)" }}
@@ -170,7 +182,7 @@ export default function Landing() {
 
       {/* CLOSING CTA */}
       <section className="border-t" style={{ borderColor: "var(--border)" }}>
-        <div className="max-w-6xl mx-auto px-6 md:px-10 py-16 text-center">
+        <div className="max-w-[1320px] mx-auto px-6 md:px-10 py-16 text-center">
           <h3
             className="text-2xl md:text-3xl font-bold mb-6"
             style={{ fontFamily: "var(--font-display)" }}
