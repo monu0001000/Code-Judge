@@ -91,7 +91,7 @@ exports.getUserDashboard = async (req, res) => {
       where: { userId },
       include: {
         problem: {
-          select: { title: true }
+          select: { title: true, difficulty: true }
         }
       },
       orderBy: { createdAt: "desc" }
@@ -103,11 +103,12 @@ exports.getUserDashboard = async (req, res) => {
       s => s.verdict === "ACCEPTED"
     ).length;
 
-    const solvedProblems = new Set(
+    const solvedProblemIds = new Set(
       submissions
         .filter(s => s.verdict === "ACCEPTED")
         .map(s => s.problemId)
-    ).size;
+    );
+    const solvedProblems = solvedProblemIds.size;
 
     const acceptanceRate = totalSubmissions
       ? ((acceptedSubmissions / totalSubmissions) * 100).toFixed(1)
@@ -121,6 +122,46 @@ exports.getUserDashboard = async (req, res) => {
         )
       : null;
 
+    // Verdict breakdown — powers a bar chart of how submissions actually land.
+    const verdictBreakdown = {
+      ACCEPTED: 0,
+      WRONG_ANSWER: 0,
+      RUNTIME_ERROR: 0,
+      TIME_LIMIT_EXCEEDED: 0,
+      PENDING: 0
+    };
+    for (const s of submissions) {
+      if (verdictBreakdown[s.verdict] !== undefined) verdictBreakdown[s.verdict] += 1;
+    }
+
+    // Solved (distinct, ACCEPTED-only) problems by difficulty.
+    const solvedByDifficulty = { EASY: 0, MEDIUM: 0, HARD: 0 };
+    const seen = new Set();
+    for (const s of submissions) {
+      if (s.verdict === "ACCEPTED" && !seen.has(s.problemId) && s.problem?.difficulty) {
+        seen.add(s.problemId);
+        solvedByDifficulty[s.problem.difficulty] += 1;
+      }
+    }
+
+    // Submissions per day for the last 14 days, oldest first — a light
+    // activity trend rather than a full calendar heatmap.
+    const DAYS = 14;
+    const dayKey = (d) => d.toISOString().slice(0, 10);
+    const counts = {};
+    for (let i = 0; i < DAYS; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      counts[dayKey(d)] = 0;
+    }
+    for (const s of submissions) {
+      const key = dayKey(new Date(s.createdAt));
+      if (key in counts) counts[key] += 1;
+    }
+    const submissionsOverTime = Object.keys(counts)
+      .sort()
+      .map(date => ({ date, count: counts[date] }));
+
     res.json({
       stats: {
         solvedProblems,
@@ -128,6 +169,9 @@ exports.getUserDashboard = async (req, res) => {
         acceptanceRate,
         fastestRuntime
       },
+      verdictBreakdown,
+      solvedByDifficulty,
+      submissionsOverTime,
       submissions
     });
 
