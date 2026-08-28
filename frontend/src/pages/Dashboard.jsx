@@ -154,14 +154,6 @@ export default function Dashboard() {
         >
           Solve Problems
         </button>
-
-        <button
-          onClick={() => navigate("/leaderboard")}
-          className="px-6 py-3 rounded-lg font-semibold border transition hover:border-[var(--accent)]"
-          style={{ borderColor: "var(--border)", color: "var(--text)" }}
-        >
-          Leaderboard
-        </button>
       </div>
 
       {/* CHARTS */}

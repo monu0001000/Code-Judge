@@ -50,14 +50,6 @@ export default function Layout({ children }) {
             </Link>
 
             <Link
-              to="/leaderboard"
-              className={`pb-1 transition duration-200 ${isActive("/leaderboard")}`}
-              style={linkStyle("/leaderboard")}
-            >
-              Leaderboard
-            </Link>
-
-            <Link
               to="/profile"
               className={`pb-1 transition duration-200 ${isActive("/profile")}`}
               style={linkStyle("/profile")}

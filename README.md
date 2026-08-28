@@ -50,6 +50,14 @@ Verdict system (ACCEPTED, WRONG_ANSWER, RUNTIME_ERROR, TIME_LIMIT_EXCEEDED, PEND
 
 Runtime measurement
 
+🔒 Sandboxed Execution
+
+Every submission runs inside `isolated-vm` — a separate V8 heap with its own memory ceiling and a wall-clock timeout
+
+No filesystem, network, or process access from submitted code (no `require`, no `fs`, no `process`)
+
+Public "try it live" demo on the landing page runs through the same sandbox, rate-limited per IP
+
 🤖 AI Code Analysis
 
 Groq-powered (Llama 3.3 70B) review of submitted code
@@ -65,6 +73,12 @@ Acceptance rate
 Total submissions
 
 Fastest runtime
+
+Verdict breakdown chart
+
+Solved-by-difficulty chart
+
+14-day submission activity trend
 
 Recent submissions tracking
 
@@ -104,15 +118,11 @@ Dashboard aggregates performance metrics
 
 ⚠️ Known Limitations
 
-Code execution currently runs via Node's `child_process`, not a fully isolated sandbox (Docker/isolated-vm sandboxing planned — see roadmap below)
-
 JavaScript submissions only; multi-language support planned
 
 Admin-only problem creation endpoint exists on the backend, but there's no admin UI yet
 
 🗺 Roadmap
-
-Isolated sandbox execution (Docker or isolated-vm)
 
 Multi-language support (Python, C++, Java)
 
