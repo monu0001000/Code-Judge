@@ -60,7 +60,6 @@ body {
 }
 
 button {
-  background: var(--accent);
   color: white;
   border: none;
   border-radius: 8px;

@@ -23,29 +23,37 @@ export default function DiscussionItem({ discussion, level, refresh }) {
 
   return (
     <div
-      className="bg-slate-800 p-4 rounded-lg"
-      style={{ marginLeft: level * 20 }}
+      className="rounded-lg border p-4"
+      style={{ marginLeft: level * 20, background: "var(--panel)", borderColor: "var(--border)" }}
     >
       {/* Header */}
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-8 h-8 rounded-full bg-cyan-600 flex items-center justify-center text-sm font-bold">
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+          style={{ background: "var(--accent)", color: "#fff" }}
+        >
           {discussion.user.name[0]}
         </div>
         <div>
-          <p className="font-semibold">{discussion.user.name}</p>
-          <p className="text-xs text-slate-400">
+          <p className="font-semibold text-sm" style={{ color: "var(--text)" }}>
+            {discussion.user.name}
+          </p>
+          <p className="text-xs" style={{ color: "var(--muted)" }}>
             {new Date(discussion.createdAt).toLocaleString()}
           </p>
         </div>
       </div>
 
       {/* Content */}
-      <p className="mb-3">{discussion.content}</p>
+      <p className="mb-3 text-sm" style={{ color: "var(--text)" }}>
+        {discussion.content}
+      </p>
 
       {/* Reply Button */}
       <button
         onClick={() => setShowReply(!showReply)}
-        className="text-sm text-cyan-400 hover:text-cyan-300"
+        className="text-sm font-medium hover:opacity-80 transition"
+        style={{ color: "var(--accent)" }}
       >
         Reply
       </button>
@@ -54,13 +62,15 @@ export default function DiscussionItem({ discussion, level, refresh }) {
       {showReply && (
         <div className="mt-3">
           <textarea
-            className="w-full bg-slate-700 p-2 rounded text-sm"
+            className="w-full p-2 rounded-lg text-sm border focus:outline-none focus-visible:ring-2"
+            style={{ background: "var(--bg)", borderColor: "var(--border)", color: "var(--text)" }}
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
           />
           <button
             onClick={handleReply}
-            className="mt-2 px-3 py-1 bg-cyan-600 rounded text-sm"
+            className="mt-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition hover:opacity-90"
+            style={{ background: "var(--accent)", color: "#fff" }}
           >
             Post Reply
           </button>
@@ -68,20 +78,18 @@ export default function DiscussionItem({ discussion, level, refresh }) {
       )}
 
       {/* Render Replies Recursively */}
-      {/* Render Replies Recursively */}
-     {discussion.replies?.length > 0 && (
-      <div className="mt-4 space-y-4">
-      {discussion.replies.map((reply) => (
-      <DiscussionItem
-        key={reply.id}
-        discussion={reply}
-        level={level + 1}
-        refresh={refresh}
-      />
-      ))}
-    </div>
-)}
-   
+      {discussion.replies?.length > 0 && (
+        <div className="mt-4 space-y-4">
+          {discussion.replies.map((reply) => (
+            <DiscussionItem
+              key={reply.id}
+              discussion={reply}
+              level={level + 1}
+              refresh={refresh}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

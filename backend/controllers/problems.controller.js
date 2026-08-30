@@ -60,6 +60,7 @@ exports.createProblem = async (req, res) => {
 exports.getAllProblems = async (req, res) => {
   try {
     const { difficulty, tag, search } = req.query;
+    const userId = req.user?.userId;
 
     const filters = {};
 
@@ -94,7 +95,19 @@ exports.getAllProblems = async (req, res) => {
       }
     });
 
-    res.json(problems);
+    // Mark which of these the current user has already solved (at least one
+    // ACCEPTED submission), so the Problems page can show a solved state
+    // without a separate round trip per card.
+    let solvedIds = new Set();
+    if (userId) {
+      const accepted = await prisma.submission.findMany({
+        where: { userId, verdict: "ACCEPTED", problemId: { in: problems.map(p => p.id) } },
+        select: { problemId: true }
+      });
+      solvedIds = new Set(accepted.map(s => s.problemId));
+    }
+
+    res.json(problems.map(p => ({ ...p, solved: solvedIds.has(p.id) })));
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

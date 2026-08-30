@@ -33,7 +33,6 @@ export default function DiscussionList({ problemId }) {
 
       setNewComment("");
       fetchDiscussions();
-
     } catch (err) {
       console.error(err);
     } finally {
@@ -43,15 +42,17 @@ export default function DiscussionList({ problemId }) {
 
   return (
     <div className="mt-6 space-y-6">
-
       {/* Comment Input */}
-      <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
-
+      <div
+        className="rounded-lg border p-4"
+        style={{ background: "var(--panel)", borderColor: "var(--border)" }}
+      >
         <textarea
           placeholder="Write a comment..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          className="w-full bg-slate-900 border border-slate-700 p-3 rounded text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          className="w-full p-3 rounded-lg text-sm resize-none border focus:outline-none focus-visible:ring-2"
+          style={{ background: "var(--bg)", borderColor: "var(--border)", color: "var(--text)" }}
           rows={3}
         />
 
@@ -59,17 +60,17 @@ export default function DiscussionList({ problemId }) {
           <button
             onClick={postComment}
             disabled={loading}
-            className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-sm font-semibold transition"
+            className="px-4 py-2 rounded-lg text-sm font-semibold transition hover:opacity-90 disabled:opacity-60"
+            style={{ background: "var(--accent)", color: "#fff" }}
           >
             {loading ? "Posting..." : "Post Comment"}
           </button>
         </div>
-
       </div>
 
       {/* Discussions */}
       {discussions.length === 0 && (
-        <p className="text-slate-400 text-sm">
+        <p className="text-sm" style={{ color: "var(--muted)" }}>
           No discussions yet. Start the conversation!
         </p>
       )}
@@ -82,7 +83,6 @@ export default function DiscussionList({ problemId }) {
           refresh={fetchDiscussions}
         />
       ))}
-
     </div>
   );
 }
