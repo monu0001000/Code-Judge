@@ -1,9 +1,25 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import SubmissionModal from "../components/SubmissionModal";
+import VerdictBadge from "../components/VerdictBadge";
+
+function StatCard({ label, value }) {
+  return (
+    <div
+      className="rounded-xl border p-5"
+      style={{ background: "var(--panel)", borderColor: "var(--border)" }}
+    >
+      <div className="text-sm mb-1" style={{ color: "var(--muted)" }}>{label}</div>
+      <div className="text-2xl font-bold" style={{ fontFamily: "var(--font-display)" }}>
+        {value}
+      </div>
+    </div>
+  );
+}
 
 export default function Profile() {
   const [data, setData] = useState(null);
+  const [error, setError] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   useEffect(() => {
@@ -13,6 +29,7 @@ export default function Profile() {
         setData(res.data);
       } catch (err) {
         console.error("Failed to load dashboard", err);
+        setError(true);
       }
     };
 
@@ -28,10 +45,26 @@ export default function Profile() {
     }
   };
 
+  if (error) {
+    return (
+      <div
+        className="rounded-xl border p-6"
+        style={{ background: "var(--panel)", borderColor: "var(--border)", color: "var(--muted)" }}
+      >
+        Couldn't load your profile right now.
+      </div>
+    );
+  }
+
   if (!data) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
-        Loading dashboard...
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="rounded-xl border p-5 animate-pulse" style={{ background: "var(--panel)", borderColor: "var(--border)", height: 76 }} />
+          ))}
+        </div>
+        <div className="rounded-xl border p-6 animate-pulse" style={{ background: "var(--panel)", borderColor: "var(--border)", height: 240 }} />
       </div>
     );
   }
@@ -39,78 +72,70 @@ export default function Profile() {
   const { stats, submissions } = data;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white p-10">
-      <h1 className="text-3xl font-bold mb-8">Your Dashboard</h1>
+    <div>
+      <h1 className="text-3xl font-bold mb-8" style={{ fontFamily: "var(--font-display)" }}>
+        Your Profile
+      </h1>
 
-      {/* Stats Section */}
-      <div className="grid grid-cols-4 gap-6 mb-10">
-        <StatCard title="Problems Solved" value={stats.solvedProblems} />
-        <StatCard title="Total Submissions" value={stats.totalSubmissions} />
-        <StatCard title="Acceptance Rate" value={`${stats.acceptanceRate}%`} />
-        <StatCard
-          title="Fastest Runtime"
-          value={stats.fastestRuntime || "-"}
-        />
+      {/* STATS */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+        <StatCard label="Problems Solved" value={stats.solvedProblems} />
+        <StatCard label="Total Submissions" value={stats.totalSubmissions} />
+        <StatCard label="Acceptance Rate" value={`${stats.acceptanceRate}%`} />
+        <StatCard label="Fastest Runtime" value={stats.fastestRuntime != null ? `${stats.fastestRuntime} ms` : "-"} />
       </div>
 
-      {/* Submission History */}
-      <div className="bg-slate-800 rounded-xl p-6 shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">Submission History</h2>
+      {/* SUBMISSION HISTORY */}
+      <div
+        className="rounded-xl border p-6"
+        style={{ background: "var(--panel)", borderColor: "var(--border)" }}
+      >
+        <h2 className="text-lg font-semibold mb-4">Submission History</h2>
 
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b border-slate-700">
-              <th className="py-3">Problem</th>
-              <th>Verdict</th>
-              <th>Runtime</th>
-              <th>Date</th>
-            </tr>
-          </thead>
+        {submissions.length === 0 ? (
+          <p className="text-sm" style={{ color: "var(--muted)" }}>
+            No submissions yet.
+          </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b" style={{ borderColor: "var(--border)" }}>
+                  <th className="py-3 font-medium" style={{ color: "var(--muted)" }}>Problem</th>
+                  <th className="font-medium" style={{ color: "var(--muted)" }}>Verdict</th>
+                  <th className="font-medium" style={{ color: "var(--muted)" }}>Runtime</th>
+                  <th className="font-medium" style={{ color: "var(--muted)" }}>Date</th>
+                </tr>
+              </thead>
 
-          <tbody>
-            {submissions.map((s) => (
-              <tr
-                key={s.id}
-                onClick={() => openSubmission(s.id)}
-                className="border-b border-slate-700 hover:bg-slate-700 cursor-pointer transition"
-              >
-                <td className="py-3">{s.problem.title}</td>
-
-                <td
-                  className={
-                    s.verdict === "ACCEPTED"
-                      ? "text-green-400 font-semibold"
-                      : "text-red-400 font-semibold"
-                  }
-                >
-                  {s.verdict}
-                </td>
-
-                <td>{s.runtimeMs || "-"}</td>
-
-                <td>
-                  {new Date(s.createdAt).toLocaleDateString()}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              <tbody>
+                {submissions.map((s) => (
+                  <tr
+                    key={s.id}
+                    onClick={() => openSubmission(s.id)}
+                    className="border-b cursor-pointer transition hover:bg-[var(--border)]"
+                    style={{ borderColor: "var(--border)" }}
+                  >
+                    <td className="py-3">{s.problem.title}</td>
+                    <td className="py-3"><VerdictBadge verdict={s.verdict} /></td>
+                    <td className="py-3" style={{ color: "var(--text)" }}>
+                      {s.runtimeMs != null ? `${s.runtimeMs} ms` : "-"}
+                    </td>
+                    <td className="py-3" style={{ color: "var(--muted)" }}>
+                      {new Date(s.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
-      {/* Submission Modal */}
       <SubmissionModal
         submission={selectedSubmission}
         onClose={() => setSelectedSubmission(null)}
       />
-    </div>
-  );
-}
-
-function StatCard({ title, value }) {
-  return (
-    <div className="bg-gradient-to-br from-slate-800 to-slate-700 p-6 rounded-2xl shadow-lg hover:scale-105 transition duration-300">
-      <h3 className="text-slate-400 text-sm mb-2">{title}</h3>
-      <p className="text-3xl font-bold text-white">{value}</p>
     </div>
   );
 }
