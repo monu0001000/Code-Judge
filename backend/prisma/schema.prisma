@@ -60,6 +60,7 @@ model TestCase {
 model Submission {
   id          String   @id @default(uuid())
   code        String
+  language    String   @default("javascript")
   verdict     Verdict
   runtimeMs   Int?
   userId      String

@@ -15,6 +15,9 @@ export default function SubmissionDetails({ submission }) {
       </div>
 
       <div className="text-sm flex gap-4 flex-wrap" style={{ color: "var(--muted)" }}>
+        {submission.language && (
+          <span className="capitalize">{submission.language === "cpp" ? "C++" : submission.language}</span>
+        )}
         <span>Submitted {new Date(submission.createdAt).toLocaleString()}</span>
         {submission.runtimeMs != null && <span>{submission.runtimeMs} ms</span>}
       </div>

@@ -103,6 +103,7 @@ export default function Profile() {
                 <tr className="border-b" style={{ borderColor: "var(--border)" }}>
                   <th className="py-3 font-medium" style={{ color: "var(--muted)" }}>Problem</th>
                   <th className="font-medium" style={{ color: "var(--muted)" }}>Verdict</th>
+                  <th className="font-medium" style={{ color: "var(--muted)" }}>Language</th>
                   <th className="font-medium" style={{ color: "var(--muted)" }}>Runtime</th>
                   <th className="font-medium" style={{ color: "var(--muted)" }}>Date</th>
                 </tr>
@@ -118,6 +119,9 @@ export default function Profile() {
                   >
                     <td className="py-3">{s.problem.title}</td>
                     <td className="py-3"><VerdictBadge verdict={s.verdict} /></td>
+                    <td className="py-3 capitalize" style={{ color: "var(--muted)" }}>
+                      {s.language === "cpp" ? "C++" : (s.language || "javascript")}
+                    </td>
                     <td className="py-3" style={{ color: "var(--text)" }}>
                       {s.runtimeMs != null ? `${s.runtimeMs} ms` : "-"}
                     </td>

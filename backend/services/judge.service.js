@@ -1,5 +1,13 @@
 const prisma = require("../prismaClient");
 const { runCodeWithInput } = require("./codeRunner");
+const { runViaE2B } = require("./e2bRunner");
+
+function runForLanguage(code, input, language, timeoutMs) {
+  if (!language || language === "javascript") {
+    return runCodeWithInput(code, input, timeoutMs);
+  }
+  return runViaE2B(code, input, language, timeoutMs);
+}
 
 function buildTestResult(testCase, details) {
   const result = {
@@ -34,6 +42,7 @@ async function judgeSubmission(submissionId) {
     if (!submission) return;
 
     const code = submission.code;
+    const language = submission.language || "javascript";
     const testCases = submission.problem?.testCases || [];
 
     const results = [];
@@ -44,7 +53,7 @@ async function judgeSubmission(submissionId) {
       try {
         const start = Date.now();
 
-        const res = await runCodeWithInput(code, tc.input);
+        const res = await runForLanguage(code, tc.input, language);
 
         const duration = Date.now() - start;
         totalRuntime += duration;

@@ -3,16 +3,19 @@ const prisma = require("../prismaClient");
 const { judgeSubmission } = require("../services/judge.service");
 
 const MAX_SUBMISSION_CODE_LENGTH = 50_000;
+const SUPPORTED_LANGUAGES = ["javascript", "python", "cpp", "java"];
 
 exports.createSubmission = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const { problemId, code } = req.body;
-
-    console.log("Problem ID from request:", problemId);
+    const { problemId, code, language = "javascript" } = req.body;
 
     if (!problemId || typeof code !== "string" || !code.trim()) {
       return res.status(400).json({ message: "A problem ID and code are required" });
+    }
+
+    if (!SUPPORTED_LANGUAGES.includes(language)) {
+      return res.status(400).json({ message: `Unsupported language: ${language}` });
     }
 
     if (code.length > MAX_SUBMISSION_CODE_LENGTH) {
@@ -26,8 +29,6 @@ exports.createSubmission = async (req, res) => {
       include: { testCases: true }
     });
 
-    console.log("Problem found:", problem);
-
     if (!problem) {
       return res.status(404).json({ message: "Problem not found" });
     }
@@ -35,6 +36,7 @@ exports.createSubmission = async (req, res) => {
     const submission = await prisma.submission.create({
       data: {
         code,
+        language,
         verdict: "PENDING",
         userId,
         problemId,
