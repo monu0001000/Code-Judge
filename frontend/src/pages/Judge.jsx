@@ -17,7 +17,15 @@ const DIFFICULTY_COLOR = {
 
 const AI_ACCENT = "#f472b6";
 
-const DEFAULT_TEMPLATE = `function solve(input) {
+const LANGUAGES = [
+  { id: "javascript", label: "JavaScript" },
+  { id: "python", label: "Python 3" },
+  { id: "cpp", label: "C++" },
+  { id: "java", label: "Java" },
+];
+
+const DEFAULT_TEMPLATES = {
+  javascript: `function solve(input) {
   // Split input lines
   const lines = input.trim().split("\\n");
 
@@ -28,7 +36,44 @@ const DEFAULT_TEMPLATE = `function solve(input) {
   // Write your solution here
 
   return "";
-}`;
+}`,
+  python: `import sys
+
+input_data = sys.stdin.read()
+
+# Write your solution here
+
+print("")`,
+  cpp: `#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    string line, input;
+    while (getline(cin, line)) {
+        input += line + "\\n";
+    }
+
+    // Write your solution here
+
+    cout << "" << endl;
+    return 0;
+}`,
+  java: `import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        StringBuilder input = new StringBuilder();
+        while (sc.hasNextLine()) {
+            input.append(sc.nextLine()).append("\\n");
+        }
+
+        // Write your solution here
+
+        System.out.println("");
+    }
+}`,
+};
 
 function Panel({ title, children, className = "" }) {
   return (
@@ -52,7 +97,8 @@ export default function Judge() {
 
   const [problem, setProblem] = useState(null);
   const [notFound, setNotFound] = useState(false);
-  const [code, setCode] = useState(DEFAULT_TEMPLATE);
+  const [language, setLanguage] = useState("javascript");
+  const [code, setCode] = useState(DEFAULT_TEMPLATES.javascript);
 
   const [verdict, setVerdict] = useState(null);
   const [testResults, setTestResults] = useState([]);
@@ -77,13 +123,13 @@ export default function Judge() {
   }, [id]);
 
   useEffect(() => {
-    const savedCode = localStorage.getItem(`draft-${id}`);
-    setCode(savedCode || DEFAULT_TEMPLATE);
-  }, [id]);
+    const savedCode = localStorage.getItem(`draft-${id}-${language}`);
+    setCode(savedCode || DEFAULT_TEMPLATES[language]);
+  }, [id, language]);
 
   useEffect(() => {
-    localStorage.setItem(`draft-${id}`, code);
-  }, [code, id]);
+    localStorage.setItem(`draft-${id}-${language}`, code);
+  }, [code, id, language]);
 
   const submitCode = async () => {
     try {
@@ -94,6 +140,7 @@ export default function Judge() {
       const submission = await api.post("/submissions", {
         problemId: problem.id,
         code,
+        language,
       });
 
       const submissionId = submission.data.id;
@@ -237,12 +284,19 @@ export default function Judge() {
         <div className="space-y-6">
           <div>
             <div className="flex justify-between items-center mb-2">
-              <div className="text-sm" style={{ color: "var(--muted)" }}>
-                JavaScript
-              </div>
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="px-3 py-1.5 rounded-lg text-sm focus:outline-none focus-visible:ring-2"
+                style={{ background: "var(--panel)", color: "var(--text)", border: "1px solid var(--border)" }}
+              >
+                {LANGUAGES.map((l) => (
+                  <option key={l.id} value={l.id}>{l.label}</option>
+                ))}
+              </select>
 
               <button
-                onClick={() => setCode(DEFAULT_TEMPLATE)}
+                onClick={() => setCode(DEFAULT_TEMPLATES[language])}
                 className="px-3 py-1 rounded-lg text-sm border transition hover:border-[var(--accent)]"
                 style={{ borderColor: "var(--border)", color: "var(--text)" }}
               >
@@ -255,7 +309,7 @@ export default function Judge() {
               style={{ borderColor: "var(--border)" }}
             >
               <div className="h-[420px]">
-                <CodeEditor code={code} setCode={setCode} />
+                <CodeEditor code={code} setCode={setCode} language={language} />
               </div>
             </div>
 
